@@ -1,15 +1,18 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UserSubscriptionWebApi.Configurations;
 using UserSubscriptionWebApi.Data;
+using UserSubscriptionWebApi.IServices;
+using UserSubscriptionWebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -36,15 +39,25 @@ builder.Services.AddAuthentication(options =>
     jwt.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey =new SymmetricSecurityKey(key),
+        IssuerSigningKey = new SymmetricSecurityKey(key),
         //just for development incase locally ssl creds can get invalidated
         ValidateIssuer = false,
         ValidateAudience = false,//for dev
-        RequireExpirationTime=false,
+        RequireExpirationTime = false,
         ValidateLifetime = true,
 
     };
 });
+
+
+//Configure IdentityUser
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+
+//configure IServices
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+
 
 var app = builder.Build();
 
