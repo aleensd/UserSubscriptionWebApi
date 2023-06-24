@@ -84,7 +84,7 @@ namespace UserSubscriptionWebApi.Services
 
             var new_user = new ApplicationUser()
             {
-                UserName = requestDTO.Username,
+                UserName = requestDTO.Email,
                 Email = requestDTO.Email,
 
             };
@@ -108,9 +108,9 @@ namespace UserSubscriptionWebApi.Services
             {
                 Result = false,
                 Errors = new List<string>
-                        {
-                            "Server error"
-                        }
+                {
+                     "Server error"
+                }
 
             };
         }
