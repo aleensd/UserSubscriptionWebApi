@@ -16,9 +16,13 @@ namespace UserSubscriptionWebApi.Data
 
         public DbSet<Subscription> Subscriptions { get; set; }
 
+        public virtual DbSet<UserSubscription> UserSubscriptions { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<UserSubscription>().HasNoKey().ToView(null);
 
             modelBuilder.Entity<SubscriptionType>()
                .HasIndex(p => p.Name)
@@ -45,10 +49,6 @@ namespace UserSubscriptionWebApi.Data
                     .WithMany(b => b.Subscriptions)
                     .HasForeignKey(b => b.SubscriptionTypeId)
                     .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Subscription>()
-                    .Property(s => s.IsActive)
-                    .HasComputedColumnSql( "CASE WHEN [StartDate] <= CURRENT_DATE AND [EndDate] >= CURRENT_DATE THEN true ELSE false END",stored:true);
 
         }
     }

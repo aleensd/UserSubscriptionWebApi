@@ -14,10 +14,7 @@ namespace UserSubscriptionWebApi.Models
         public int SubscriptionTypeId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-
-        [NotMapped]
         public bool IsActive { get; set; }
-
         public ApplicationUser ApplicationUser { get; set; }
         public Product Product { get; set; }
         public SubscriptionType SubscriptionType { get; set; }
