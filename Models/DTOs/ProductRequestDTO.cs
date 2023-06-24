@@ -9,7 +9,5 @@ namespace UserSubscriptionWebApi.Models.DTOs
         [Required]
         [MaxLength(50)]
         public string Description { get; set; }
-        [Required]
-        public string Quantity { get; set; }
     }
 }

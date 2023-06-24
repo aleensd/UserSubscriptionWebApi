@@ -14,10 +14,7 @@ namespace UserSubscriptionWebApi.Profiles
                 opt => opt.MapFrom(src => src.Name))
                   .ForMember(
                 dest => dest.Description,
-                opt => opt.MapFrom(src => src.Description))
-                 .ForMember(
-                dest => dest.Quantity,
-                opt => opt.MapFrom(src => src.Quantity));
+                opt => opt.MapFrom(src => src.Description));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using UserSubscriptionWebApi.Data;
 using UserSubscriptionWebApi.Models.DTOs;
 
@@ -13,6 +14,8 @@ namespace UserSubscriptionWebApi.Models
         public int SubscriptionTypeId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+
+        [NotMapped]
         public bool IsActive { get; set; }
 
         public ApplicationUser ApplicationUser { get; set; }

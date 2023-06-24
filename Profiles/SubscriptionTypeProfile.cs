@@ -16,7 +16,10 @@ namespace UserSubscriptionWebApi.Profiles
                 opt => opt.MapFrom(src => src.Description))
                  .ForMember(
                 dest => dest.Price,
-                opt => opt.MapFrom(src => src.Price));
+                opt => opt.MapFrom(src => src.Price))
+                 .ForMember(
+                dest => dest.Days,
+                opt => opt.MapFrom(src => src.Days));
         }
     }
 }

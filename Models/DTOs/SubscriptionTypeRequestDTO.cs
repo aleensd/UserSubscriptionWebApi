@@ -11,5 +11,7 @@ namespace UserSubscriptionWebApi.Models.DTOs
         public string Description { get; set; }
         [Required]
         public string Price { get; set; }
+        [Required]
+        public string Days { get; set; }
     }
 }

@@ -20,6 +20,10 @@ namespace UserSubscriptionWebApi.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<SubscriptionType>()
+               .HasIndex(p => p.Name)
+               .IsUnique();
+
             modelBuilder.Entity<Product>()
                .Property(b => b.IsDeleted)
                .HasDefaultValue(false);
@@ -41,6 +45,10 @@ namespace UserSubscriptionWebApi.Data
                     .WithMany(b => b.Subscriptions)
                     .HasForeignKey(b => b.SubscriptionTypeId)
                     .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Subscription>()
+                    .Property(s => s.IsActive)
+                    .HasComputedColumnSql( "CASE WHEN [StartDate] <= CURRENT_DATE AND [EndDate] >= CURRENT_DATE THEN true ELSE false END",stored:true);
 
         }
     }
