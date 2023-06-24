@@ -75,9 +75,9 @@ namespace UserSubscriptionWebApi.Services
                 {
                     Result = false,
                     Errors = new List<string>
-                        {
-                            "Email already exists"
-                        }
+                    {
+                         "Email already exists"
+                    }
 
                 };
             }

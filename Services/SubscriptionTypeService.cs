@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using UserSubscriptionWebApi.Data;
 using UserSubscriptionWebApi.IServices;
@@ -29,12 +30,11 @@ namespace UserSubscriptionWebApi.Services
             return null;
         }
 
-        public IEnumerable<SubscriptionType> GetALL()
+        public async Task<IEnumerable<SubscriptionType>> GetALL()
         {
-            var subscriptionTypes = _context.SubscriptionTypes.ToList();
+            var subscriptionTypes = await _context.SubscriptionTypes.FromSqlRaw("Select * from public.get_subscription_types_1()").ToListAsync();
             if (subscriptionTypes.Any())
             {
-
                 return subscriptionTypes;
             }
             return null;

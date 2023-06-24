@@ -5,6 +5,6 @@ namespace UserSubscriptionWebApi.IServices
     public interface ISubscriptionType
     {
         Task<SubscriptionType> Create(SubscriptionTypeRequestDTO requestDTO);
-        IEnumerable<SubscriptionType> GetALL();
+        Task<IEnumerable<SubscriptionType>> GetALL();
     }
 }

@@ -20,10 +20,9 @@ namespace UserSubscriptionWebApi.Controllers
         [HttpGet]
         [Route("get")]
         [Authorize(Roles = "ADMIN,USER")]
-        public IActionResult GetALL()
+        public async Task<IActionResult> GetALL()
         {
-
-            var result = _subscriptionType.GetALL();
+            var result = await _subscriptionType.GetALL();
             if (result == null)
             {
                 return BadRequest("Server Error");
@@ -31,8 +30,6 @@ namespace UserSubscriptionWebApi.Controllers
             return Ok(result);
 
         }
-
-
 
 
         [HttpPost]
