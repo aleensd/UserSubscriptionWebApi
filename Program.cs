@@ -51,7 +51,7 @@ builder.Services.AddAuthentication(options =>
 
 
 //Configure IdentityUser
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 
 //configure IServices

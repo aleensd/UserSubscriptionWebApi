@@ -40,5 +40,29 @@ namespace UserSubscriptionWebApi.Controllers
 
         }
 
+        [HttpPost]
+        [Route("Login")]
+        public async Task<IActionResult> Login([FromBody] UserLoginRequestDTO requestDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _authService.Login(requestDTO);
+                if (!result.Result)
+                {
+                    return BadRequest(result);
+                }
+
+                return Ok(result);
+            }
+            return BadRequest(new AuthResult()
+            {
+                Result = false,
+                Errors = new List<string>()
+                {
+                    "Invalid Payload"
+                }
+            });
+        }
+
     }
 }

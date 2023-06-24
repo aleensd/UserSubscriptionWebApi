@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using UserSubscriptionWebApi.Configurations;
+using UserSubscriptionWebApi.Data;
 using UserSubscriptionWebApi.IServices;
 using UserSubscriptionWebApi.Models;
 using UserSubscriptionWebApi.Models.DTOs;
@@ -13,15 +14,55 @@ namespace UserSubscriptionWebApi.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         private readonly IConfiguration _configuration;
 
 
-        public AuthService(UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _configuration = configuration;
+        }
+
+        public async Task<AuthResult> Login(UserLoginRequestDTO requestDTO)
+        {
+            //Check if user exists
+            var existing_user = await _userManager.FindByEmailAsync(requestDTO.Email);
+            if (existing_user == null)
+            {
+                return new AuthResult()
+                {
+                    Result = false,
+                    Errors = new List<string>
+                    {
+                        "Invalid Payload"
+                    }
+                };
+
+            }
+            var isPasswordCorrect = await _userManager.CheckPasswordAsync(existing_user, requestDTO.Password);
+            if (!isPasswordCorrect)
+            {
+                return new AuthResult()
+                {
+                    Result = false,
+                    Errors = new List<string>
+                    {
+                           "Invalid Credentials"
+                    }
+
+                };
+
+            }
+            //Generate token
+            var token = GenerateToken(existing_user, "USER");
+            return new AuthResult()
+            {
+                Token = token,
+                Result = true,
+            };
+
         }
 
         public async Task<AuthResult> Register(UserRegistrationRequestDTO requestDTO)
@@ -41,7 +82,7 @@ namespace UserSubscriptionWebApi.Services
                 };
             }
 
-            var new_user = new IdentityUser()
+            var new_user = new ApplicationUser()
             {
                 UserName = requestDTO.Username,
                 Email = requestDTO.Email,
@@ -51,7 +92,7 @@ namespace UserSubscriptionWebApi.Services
             var is_created = await _userManager.CreateAsync(new_user, requestDTO.Password);
             if (is_created.Succeeded)
             {
-               await _userManager.AddToRoleAsync(new_user, "user");
+                await _userManager.AddToRoleAsync(new_user, "user");
 
                 //Generate token
                 var token = GenerateToken(new_user, "USER");
@@ -74,7 +115,7 @@ namespace UserSubscriptionWebApi.Services
             };
         }
 
-        private string GenerateToken(IdentityUser user, string role)
+        private string GenerateToken(ApplicationUser user, string role)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_configuration.GetSection("JwtConfig:Secret").Value);

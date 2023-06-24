@@ -7,5 +7,6 @@ namespace UserSubscriptionWebApi.IServices
     public interface IAuthService
     {
         Task<AuthResult> Register(UserRegistrationRequestDTO requestDTO);
+        Task<AuthResult> Login(UserLoginRequestDTO requestDTO);
     }
 }
