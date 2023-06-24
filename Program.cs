@@ -85,6 +85,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 //configure IServices
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISubscriptionType, SubscriptionTypeService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 //Configure AutoMapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

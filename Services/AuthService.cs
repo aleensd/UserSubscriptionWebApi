@@ -56,7 +56,8 @@ namespace UserSubscriptionWebApi.Services
 
             }
             //Generate token
-            var token = GenerateToken(existing_user, "USER");
+            var roles = await _userManager.GetRolesAsync(existing_user);
+            var token = GenerateToken(existing_user, roles[0]);
             return new AuthResult()
             {
                 Token = token,
@@ -92,10 +93,10 @@ namespace UserSubscriptionWebApi.Services
             var is_created = await _userManager.CreateAsync(new_user, requestDTO.Password);
             if (is_created.Succeeded)
             {
-                await _userManager.AddToRoleAsync(new_user, "user");
+                await _userManager.AddToRoleAsync(new_user, "USER");
 
                 //Generate token
-                var token = GenerateToken(new_user, "USER");
+                var token = GenerateToken(new_user, "ADMIN");
 
                 return new AuthResult()
                 {
