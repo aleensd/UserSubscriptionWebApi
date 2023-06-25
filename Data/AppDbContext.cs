@@ -16,6 +16,8 @@ namespace UserSubscriptionWebApi.Data
 
         public DbSet<Subscription> Subscriptions { get; set; }
 
+        public  DbSet<Log> log { get; set; }
+
         public virtual DbSet<UserSubscription> UserSubscriptions { get; set; }
         public virtual DbSet<SubscriptionRemainingDays> SubscriptionDays { get; set; }
 

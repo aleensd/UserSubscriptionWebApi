@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using UserSubscriptionWebApi.Data;
@@ -11,9 +12,10 @@ using UserSubscriptionWebApi.Data;
 namespace UserSubscriptionWebApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230625204610_create-table-log")]
+    partial class createtablelog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -321,9 +323,8 @@ namespace UserSubscriptionWebApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Logged")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<DateTime>("Logged")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Logger")
                         .IsRequired()

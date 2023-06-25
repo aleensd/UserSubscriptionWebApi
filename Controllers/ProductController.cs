@@ -12,9 +12,12 @@ namespace UserSubscriptionWebApi.Controllers
     {
         private readonly IProductService _productService;
 
-        public ProductController(IProductService productService)
+        private readonly ILogger<ProductController> _logger;
+
+        public ProductController(IProductService productService, ILogger<ProductController> logger)
         {
             _productService = productService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -22,6 +25,8 @@ namespace UserSubscriptionWebApi.Controllers
         [Authorize(Roles = "ADMIN,USER")]
         public async Task<IActionResult> GetALL()
         {
+            _logger.LogInformation("Getting all Products");
+
             var result = await _productService.GetALL();
             if (result == null)
             {
