@@ -50,7 +50,16 @@ namespace UserSubscriptionWebApi.Services
             return null;
         }
 
-       
+        public async Task<int> GeTSubscriptionRemainingDays(int subscriptionId)
+        {
+            var subscription_remaining_days = await _context.SubscriptionDays.FromSqlInterpolated($"SELECT get_subscription_remaining_days({subscriptionId}) AS RemainingDays")
+            .FirstOrDefaultAsync();
+            if (subscription_remaining_days.remainingdays != null)
+            {
+                return subscription_remaining_days.remainingdays;
+            }
+            return 0;
+        }
 
         public async Task<IEnumerable<UserSubscription>> GetSubscriptionsByUser(string userId)
         {

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -98,6 +99,12 @@ builder.Services.AddControllersWithViews()
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
 );
 
+//configure Http Logging
+builder.Services.AddHttpLogging(httpLogging =>
+{
+    httpLogging.LoggingFields = HttpLoggingFields.All;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -106,6 +113,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseHttpLogging();
 
 app.UseHttpsRedirection();
 

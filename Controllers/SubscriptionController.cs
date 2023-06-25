@@ -16,8 +16,10 @@ namespace UserSubscriptionWebApi.Controllers
         {
             _subscription = subscription;
         }
+
+
         [HttpGet("/{userId}")]
-        //[Authorize(Roles = "ADMIN,USER")]
+        [Authorize(Roles = "ADMIN,USER")]
         public async Task<IActionResult> GetSubscriptionByUser(string userId)
         {
             var result = await _subscription.GetSubscriptionsByUser(userId);
@@ -31,8 +33,7 @@ namespace UserSubscriptionWebApi.Controllers
 
 
         [HttpPost]
-        [Route("create")]
-        // [Authorize(Roles = "ADMIN,USER")]
+        [Authorize(Roles = "ADMIN,USER")]
         public async Task<IActionResult> Create([FromBody] SubscriptionRequestDTO requestDTO)
         {
             if (ModelState.IsValid)
@@ -47,6 +48,19 @@ namespace UserSubscriptionWebApi.Controllers
             }
             else
                 return BadRequest();
+
+        }
+
+        [HttpGet("days/{subscriptionId}")]
+        [Authorize(Roles = "ADMIN,USER")]
+        public async Task<IActionResult> GetSubscriptionRemainingDays(int subscriptionId)
+        {
+            var result = await _subscription.GeTSubscriptionRemainingDays(subscriptionId);
+            if (result == 0)
+            {
+                return Ok("Your subscription is already not active");
+            }
+            return Ok(result);
 
         }
     }

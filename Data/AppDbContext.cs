@@ -17,12 +17,18 @@ namespace UserSubscriptionWebApi.Data
         public DbSet<Subscription> Subscriptions { get; set; }
 
         public virtual DbSet<UserSubscription> UserSubscriptions { get; set; }
+        public virtual DbSet<SubscriptionRemainingDays> SubscriptionDays { get; set; }
+
+
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<UserSubscription>().HasNoKey().ToView(null);
+
+            modelBuilder.Entity<SubscriptionRemainingDays>().HasNoKey().ToView(null);
 
             modelBuilder.Entity<SubscriptionType>()
                .HasIndex(p => p.Name)

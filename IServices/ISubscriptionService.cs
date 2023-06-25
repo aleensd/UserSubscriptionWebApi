@@ -7,5 +7,7 @@ namespace UserSubscriptionWebApi.IServices
     {
         Task<Subscription> Create(SubscriptionRequestDTO requestDTO);
         Task<IEnumerable<UserSubscription>> GetSubscriptionsByUser(string userId);
+
+        Task<int> GeTSubscriptionRemainingDays(int subscriptionId);
     }
 }
