@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using UserSubscriptionWebApi.Configurations;
+using UserSubscriptionWebApi.Exceptions;
 using UserSubscriptionWebApi.IServices;
 using UserSubscriptionWebApi.Models;
 using UserSubscriptionWebApi.Models.DTOs;
@@ -29,14 +30,14 @@ namespace UserSubscriptionWebApi.Controllers
 
                 if (!result.Result)
                 {
-                    return BadRequest(result);
+                    return result.Errors[0] == "Email already exists" ? throw new ObjectAlreadyExistsException("Email already exists") : throw new BadRequestException("Server Error");
                 }
 
                 return Ok(result);
 
             }
             else
-                return BadRequest();
+                throw new BadRequestException("Server Error");
 
         }
 
@@ -49,19 +50,12 @@ namespace UserSubscriptionWebApi.Controllers
                 var result = await _authService.Login(requestDTO);
                 if (!result.Result)
                 {
-                    return BadRequest(result);
+                    throw new BadRequestException(result.Errors[0]);
                 }
 
                 return Ok(result);
             }
-            return BadRequest(new AuthResult()
-            {
-                Result = false,
-                Errors = new List<string>()
-                {
-                    "Invalid Payload"
-                }
-            });
+            throw new BadRequestException("Inavlid payload");
         }
 
     }

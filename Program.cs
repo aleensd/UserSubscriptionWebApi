@@ -133,6 +133,8 @@ try
 
     app.UseAuthorization();
 
+    app.AddGlobalErrorHandler();
+
     app.MapControllers();
 
     app.Run();

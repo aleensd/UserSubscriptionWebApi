@@ -31,6 +31,14 @@ namespace UserSubscriptionWebApi.Services
             return null;
         }
 
+        public async Task<bool> Delete(int id)
+        {
+            var prod = await GetById(id);
+            _context.Products.Remove(prod);
+            await _context.SaveChangesAsync();
+            return prod != null ? true : false;
+        }
+
         public async Task<IEnumerable<Product>> GetALL()
         {
             var products = await _context.Products.ToListAsync();
@@ -39,7 +47,11 @@ namespace UserSubscriptionWebApi.Services
                 return products;
             }
             return null;
+        }
 
+        public async Task<Product> GetById(int id)
+        {
+            return await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
         }
     }
 }

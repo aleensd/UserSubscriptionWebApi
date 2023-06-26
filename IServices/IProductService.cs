@@ -7,5 +7,7 @@ namespace UserSubscriptionWebApi.IServices
     {
         Task<Product> Create(ProductRequestDTO requestDTO);
         Task<IEnumerable<Product>> GetALL();
+        Task<Product> GetById(int id);
+        Task<bool> Delete(int id);
     }
 }
