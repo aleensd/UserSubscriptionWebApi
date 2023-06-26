@@ -9,6 +9,7 @@ namespace UserSubscriptionWebApi.IServices
         Task<IEnumerable<Product>> GetALLPaginated(int page, int limit);
         Task<IEnumerable<Product>> GetALL();
         Task<Product> GetById(int id);
+        Task<Product> Update(int id,ProductRequestDTO requestDTO);
         Task<bool> Delete(int id);
     }
 }

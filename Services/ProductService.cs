@@ -36,14 +36,18 @@ namespace UserSubscriptionWebApi.Services
         public async Task<bool> Delete(int id)
         {
             var prod = await GetById(id);
-            _context.Products.Remove(prod);
-            await _context.SaveChangesAsync();
-            return prod != null ? true : false;
+            if (prod != null)
+            {
+                _context.Products.Remove(prod);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
 
         public async Task<IEnumerable<Product>> GetALLPaginated(int page, int limit)
         {
-            var products = await _context.Products.Include(s=>s.Subscriptions).Skip((int)((page-1)*limit)).Take((int)limit).ToListAsync();
+            var products = await _context.Products.Include(s => s.Subscriptions).Skip((int)((page - 1) * limit)).Take((int)limit).ToListAsync();
             if (products.Any())
             {
                 return products;
@@ -64,6 +68,20 @@ namespace UserSubscriptionWebApi.Services
         public async Task<Product> GetById(int id)
         {
             return await _context.Products.FirstOrDefaultAsync(p => p.ProductId == id);
+        }
+
+        public async Task<Product> Update(int id, ProductRequestDTO requestDTO)
+        {
+            var prod = await GetById(id);
+            if (prod != null)
+            {
+                prod.Name = requestDTO.Name;
+                prod.Description = requestDTO.Description;
+                var result = _context.Products.Update(prod);
+                return result.Entity;
+            }
+            return null;
+
         }
     }
 }

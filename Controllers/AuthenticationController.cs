@@ -39,7 +39,7 @@ namespace UserSubscriptionWebApi.Controllers
 
                 _logger.LogDebug($"new user{requestDTO.Username} registered successfully");
 
-                return Ok(result);
+                return new JsonResult(result) { StatusCode = 201 };
             }
             else
                 throw new BadRequestException("Server Error");
