@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using UserSubscriptionWebApi.Exceptions;
 using UserSubscriptionWebApi.IServices;
 using UserSubscriptionWebApi.Models.DTOs;
 
@@ -11,10 +12,11 @@ namespace UserSubscriptionWebApi.Controllers
     public class SubscriptionController : ControllerBase
     {
         private readonly ISubscriptionService _subscription;
-
-        public SubscriptionController(ISubscriptionService subscription)
+        private readonly ILogger<SubscriptionController> _logger;
+        public SubscriptionController(ISubscriptionService subscription, ILogger<SubscriptionController> logger)
         {
             _subscription = subscription;
+            _logger = logger;
         }
 
 
@@ -22,15 +24,16 @@ namespace UserSubscriptionWebApi.Controllers
         [Authorize(Roles = "ADMIN,USER")]
         public async Task<IActionResult> GetSubscriptionByUser(string userId)
         {
+            _logger.LogDebug($"Getting subscription details for {userId}");
+
             var result = await _subscription.GetSubscriptionsByUser(userId);
             if (result == null)
             {
-                return BadRequest("Server Error");
+                throw new BadRequestException("Server Error");
             }
             return Ok(result);
 
         }
-
 
         [HttpPost]
         [Authorize(Roles = "ADMIN,USER")]
@@ -38,16 +41,18 @@ namespace UserSubscriptionWebApi.Controllers
         {
             if (ModelState.IsValid)
             {
+                _logger.LogDebug($"User {requestDTO.ApplicationUserId} subscriping to product {requestDTO.ProductId}");
                 var result = await _subscription.Create(requestDTO);
                 if (result == null)
                 {
-                    return BadRequest("Server Error");
+                    throw new BadRequestException("Server Error");
                 }
+                _logger.LogDebug($"User {requestDTO.ApplicationUserId} subscribed to product {requestDTO.ProductId} successfully");
                 return new JsonResult(result) { StatusCode = 201 };
 
             }
             else
-                return BadRequest();
+                throw new BadRequestException("Server Error");
 
         }
 
@@ -55,6 +60,7 @@ namespace UserSubscriptionWebApi.Controllers
         [Authorize(Roles = "ADMIN,USER")]
         public async Task<IActionResult> GetSubscriptionRemainingDays(int subscriptionId)
         {
+            _logger.LogDebug($"Getting remaining subscription days for {subscriptionId}");
             var result = await _subscription.GeTSubscriptionRemainingDays(subscriptionId);
             if (result == 0)
             {

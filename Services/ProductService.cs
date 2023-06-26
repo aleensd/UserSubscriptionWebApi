@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using UserSubscriptionWebApi.Data;
+using UserSubscriptionWebApi.Exceptions;
 using UserSubscriptionWebApi.IServices;
 using UserSubscriptionWebApi.Models;
 using UserSubscriptionWebApi.Models.DTOs;
@@ -39,9 +41,19 @@ namespace UserSubscriptionWebApi.Services
             return prod != null ? true : false;
         }
 
+        public async Task<IEnumerable<Product>> GetALLPaginated(int page, int limit)
+        {
+            var products = await _context.Products.Include(s=>s.Subscriptions).Skip((int)((page-1)*limit)).Take((int)limit).ToListAsync();
+            if (products.Any())
+            {
+                return products;
+            }
+            return null;
+        }
+
         public async Task<IEnumerable<Product>> GetALL()
         {
-            var products = await _context.Products.ToListAsync();
+            var products = await _context.Products.Include(s => s.Subscriptions).ToListAsync();
             if (products.Any())
             {
                 return products;

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UserSubscriptionWebApi.Exceptions;
 using UserSubscriptionWebApi.IServices;
+using UserSubscriptionWebApi.Models;
 using UserSubscriptionWebApi.Models.DTOs;
 
 namespace UserSubscriptionWebApi.Controllers
@@ -23,11 +24,22 @@ namespace UserSubscriptionWebApi.Controllers
 
         [HttpGet]
         [Authorize(Roles = "ADMIN,USER")]
-        public async Task<IActionResult> GetALL()
+        public async Task<IActionResult> GetALL([FromQuery] int? page, [FromQuery] int? limit)
         {
+
+            if (page <= 0 || limit <= 0)
+            {
+                throw new BadRequestException("Page cannot be 0 and limit should be greater than zero");
+            }
+            if (page == null && limit == null)
+            {
+                var all = await _productService.GetALL();
+                return Ok(all);
+            }
+
             _logger.LogDebug("Getting all Products");
 
-            var result = await _productService.GetALL();
+            var result = await _productService.GetALLPaginated((int)page, (int)limit);
 
             return Ok(result != null ? result : new int[0]);
 
