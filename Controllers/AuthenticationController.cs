@@ -15,9 +15,12 @@ namespace UserSubscriptionWebApi.Controllers
     {
         private readonly IAuthService _authService;
 
-        public AuthenticationController(IAuthService authService)
+        private readonly ILogger<AuthenticationController> _logger;
+
+        public AuthenticationController(IAuthService authService, ILogger<AuthenticationController> logger)
         {
             _authService = authService;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -26,19 +29,20 @@ namespace UserSubscriptionWebApi.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _authService.Register(requestDTO);
+                _logger.LogDebug("new user is registring");
 
+                var result = await _authService.Register(requestDTO);
                 if (!result.Result)
                 {
                     return result.Errors[0] == "Email already exists" ? throw new ObjectAlreadyExistsException("Email already exists") : throw new BadRequestException("Server Error");
                 }
 
-                return Ok(result);
+                _logger.LogDebug($"new user{requestDTO.Username} registered successfully");
 
+                return Ok(result);
             }
             else
                 throw new BadRequestException("Server Error");
-
         }
 
         [HttpPost]
@@ -47,12 +51,13 @@ namespace UserSubscriptionWebApi.Controllers
         {
             if (ModelState.IsValid)
             {
+                _logger.LogDebug($"{requestDTO.Email} is Logging in");
                 var result = await _authService.Login(requestDTO);
                 if (!result.Result)
                 {
                     throw new BadRequestException(result.Errors[0]);
                 }
-
+                _logger.LogDebug($"{requestDTO.Email} is logged in successfully");
                 return Ok(result);
             }
             throw new BadRequestException("Inavlid payload");
